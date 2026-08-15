@@ -1,149 +1,80 @@
----
-title: FinOps AI Copilot
-emoji: 💼
-colorFrom: indigo
-colorTo: blue
-sdk: docker
-app_port: 7860
-pinned: false
-fullWidth: true
-header: mini
-short_description: AI expense review with Human-in-the-Loop
----
-
 # 💼 FinOps AI Copilot
 
-**AI-powered expense review with policy compliance, exception detection, evidence checking and Human-in-the-Loop decision making.**
+**AI-powered expense review, policy compliance and Human-in-the-Loop finance decisions.**
 
-FinOps AI Copilot helps Finance teams review employee expense claims against travel and expense policies.
+[🚀 **Live Demo on Hugging Face**](https://huggingface.co/spaces/SumitKohli/finops-ai-copilot)
 
-The AI analyses uploaded documents and provides recommendations, but **the final Approve, Reject or Escalate decision remains with a human Finance reviewer.**
-
----
-
-## 🎯 What it does
-
-The application can:
-
-- 📤 Upload expense claims, receipts, invoices and finance/travel policies
-- 🧾 Extract and summarise expense information
-- 📑 Check expenses against policy limits and rules
-- ⚠️ Identify policy exceptions and potential risks
-- 📎 Detect missing receipts, approvals or supporting evidence
-- 🔎 Provide source document and page references
-- 🤖 Generate an advisory AI recommendation
-- 🤝 Record a Human-in-the-Loop Finance decision
-- 📝 Capture reviewer notes
-- 📄 Generate a downloadable Finance Review Report
+FinOps AI Copilot is an MVP that helps Finance teams review employee expense claims against travel and expense policies, identify exceptions and missing evidence, generate an advisory AI recommendation, and retain the **final decision with a human Finance reviewer**.
 
 ---
 
-## ⚡ Finance Quick Reviews
+## 🖥️ Demo
 
-### 🧾 Expense Summary
-Extracts key expense information such as:
-
-- Expense type
-- Date
-- Amount
-- Currency
-- Merchant/provider
-- Claimant
-- Source document
-- Page reference
-
-### 📑 Policy Compliance
-Compares claimed expenses with uploaded finance or travel policies and identifies:
-
-- Compliant expenses
-- Policy exceptions
-- Expenses requiring manual review
-- Relevant policy rules and limits
-
-### ⚠️ Exceptions & Risks
-Highlights material issues such as:
-
-- Expenses above policy limits
-- Non-reimbursable expenses
-- Missing approvals
-- Policy violations
-- Items requiring further Finance review
-
-### 📎 Missing Evidence
-Identifies missing supporting documentation such as:
-
-- Receipts
-- Invoices
-- Manager approvals
-- Proof of payment
-- Other evidence required by policy
+![FinOps AI Copilot Main Interface](docs/screenshots/01-main-interface.png)
 
 ---
 
-## 🤖 AI Recommendation + Human-in-the-Loop
+## 🎯 The Problem
 
-FinOps AI Copilot generates an **advisory AI recommendation** based on the uploaded documents.
+Finance teams often need to manually compare:
 
-Example recommendations include:
+* Expense claims
+* Receipts and invoices
+* Travel & expense policies
+* Approval evidence
+* Policy limits and exceptions
 
-- APPROVE
-- REJECT
-- ESCALATE / MANUAL REVIEW
-
-The AI does **not** make the final Finance decision.
-
-An authorised reviewer records the final outcome using:
-
-- ✅ Approve
-- ❌ Reject
-- 👤 Escalate / Manual Review
-
-The reviewer can also enter a note explaining the final decision.
-
-This keeps the application aligned with a **Human-in-the-Loop governance model**.
+This creates repetitive review work and can make it difficult to consistently identify missing evidence, policy breaches and cases requiring manual escalation.
 
 ---
 
-## 👁️ Document and receipt extraction
+## 💡 The Solution
 
-The application uses a two-stage extraction approach.
+FinOps AI Copilot combines document extraction, semantic retrieval and Generative AI to support a structured finance review workflow:
 
-### Native PDF text
+**Upload → Extract → Retrieve Evidence → Check Policy → Identify Exceptions → AI Recommendation → Human Decision → Finance Report**
 
-For text-based PDFs, the application first uses standard PDF text extraction.
-
-This is fast and preserves document/page information.
-
-### Gemini vision / OCR fallback
-
-If readable text cannot be extracted from a document, the application can use Gemini's multimodal document understanding as a fallback.
-
-This enables the MVP to process:
-
-- Scanned PDFs
-- Photographed receipts
-- JPG/JPEG files
-- PNG files
-- WEBP images
-
-The extracted content is then passed into the same Finance review workflow.
+The AI supports the reviewer but does **not** make the final financial decision.
 
 ---
 
-## 🔎 Grounded document analysis
+## ✨ Core Features
 
-The application uses document retrieval to help ground answers in uploaded evidence.
+### 📤 1. Expense & Policy Document Upload
 
-The workflow combines:
+Supports finance and travel documents including:
 
-- PDF/document extraction
-- Text chunking
-- Sentence Transformer embeddings
-- Semantic retrieval
-- Gemini-based analysis
-- File and page references
+* PDF expense claims
+* Travel & expense policies
+* Receipts
+* Invoices
+* JPG / JPEG
+* PNG
+* WEBP
 
-Finance reviewers can also ask questions such as:
+Multiple documents can be analysed together.
+
+---
+
+### 🧾 2. Finance Case Summary
+
+The Copilot extracts and summarises relevant information such as:
+
+* Employee / claimant
+* Expense type
+* Date
+* Amount
+* Currency
+* Merchant / provider
+* Travel purpose
+* Supporting evidence
+* Relevant policy information
+
+---
+
+### 🔎 3. Finance / Policy Q&A
+
+Users can ask questions directly against the uploaded documents, for example:
 
 > Is the hotel expense within policy?
 
@@ -151,155 +82,340 @@ Finance reviewers can also ask questions such as:
 
 > What supporting evidence is missing?
 
-> Why is the taxi claim being escalated?
+> Why is this claim being escalated?
+
+Answers are grounded in retrieved document evidence and include **source file and page references where available**.
 
 ---
 
-## 🏗️ High-level architecture
+### ⚡ 4. Structured Finance Quick Reviews
 
-```text
-                    ┌─────────────────────┐
-                    │ Expense / Policy    │
-                    │ Documents           │
-                    └──────────┬──────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ Document Extraction │
-                    │                     │
-                    │ PDF text first      │
-                    │ Vision/OCR fallback │
-                    └──────────┬──────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ Chunking +          │
-                    │ Embeddings          │
-                    └──────────┬──────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ Evidence Retrieval  │
-                    └──────────┬──────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ Gemini Finance      │
-                    │ Analysis            │
-                    └──────────┬──────────┘
-                               │
-          ┌────────────────────┼────────────────────┐
-          │                    │                    │
-          ▼                    ▼                    ▼
-   Policy Compliance     Exceptions & Risks    Missing Evidence
-          │                    │                    │
-          └────────────────────┼────────────────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ AI Recommendation   │
-                    │ Advisory Only       │
-                    └──────────┬──────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ Human Finance       │
-                    │ Decision            │
-                    └──────────┬──────────┘
-                               │
-                    ┌──────────▼──────────┐
-                    │ Finance Review      │
-                    │ Report              │
-                    └─────────────────────┘
-```
+The application provides four one-click finance checks.
+
+#### 🧾 Expense Summary
+
+Extracts structured expense information including:
+
+* Expense type
+* Date
+* Amount
+* Currency
+* Merchant / provider
+* Claimant
+* Source
+* Page
+
+#### 📑 Policy Compliance
+
+Compares expenses against uploaded finance or travel policies and identifies:
+
+* Compliant expenses
+* Policy exceptions
+* Policy limits
+* Items requiring manual review
+* Relevant evidence
+
+![Policy Compliance Review](docs/screenshots/02-policy-compliance.png)
+
+#### ⚠️ Exceptions & Risks
+
+Identifies issues such as:
+
+* Expenses above policy limits
+* Non-reimbursable expenses
+* Missing approvals
+* Policy exceptions
+* Potential review risks
+
+#### 📎 Missing Evidence
+
+Identifies missing documentation such as:
+
+* Receipts
+* Invoices
+* Manager approvals
+* Proof of payment
+* Required supporting evidence
 
 ---
 
-## 🛠️ Technology stack
+## 👁️ Multimodal Receipt / OCR Support
 
-- **Python**
-- **Gradio**
-- **Google Gemini API**
-- **Sentence Transformers**
-- **all-MiniLM-L6-v2 embeddings**
-- **PyPDF**
-- **python-docx**
-- **Docker**
-- **Hugging Face Spaces**
+The application uses a two-stage document extraction approach.
+
+### Native PDF Text
+
+For text-based PDFs, the application first uses standard PDF text extraction.
+
+This is fast and preserves document/page information.
+
+### Gemini Vision / OCR Fallback
+
+If readable text cannot be extracted normally, the application can use **Google Gemini multimodal document understanding** to read scanned or image-based content.
+
+This enables the MVP to process:
+
+* Scanned PDFs
+* Photographed receipts
+* JPG / JPEG receipts
+* PNG images
+* WEBP images
+
+The extracted text then enters the same finance review workflow.
+
+---
+
+## 🧠 Document Grounding & Retrieval
+
+The application uses a RAG-style retrieval workflow to ground AI responses in uploaded documents.
+
+The process includes:
+
+1. Document text extraction
+2. Page-level metadata preservation
+3. Text chunking
+4. Sentence Transformer embeddings
+5. Semantic retrieval
+6. Keyword / evidence matching
+7. Gemini analysis
+8. Source and page references
+
+This helps reduce unsupported answers and allows Finance reviewers to trace findings back to uploaded evidence.
+
+---
+
+## 🤖 AI Recommendation
+
+The Copilot generates an **advisory AI recommendation** based on the available evidence.
+
+Possible recommendations include:
+
+* ✅ APPROVE
+* ❌ REJECT
+* 👤 ESCALATE / MANUAL REVIEW
+
+The recommendation includes:
+
+* Confidence level
+* Rationale
+* Identified exceptions
+* Required follow-up
+
+---
+
+## 🤝 Human-in-the-Loop Governance
+
+The AI recommendation is deliberately separated from the final Finance decision.
+
+The authorised reviewer can independently select:
+
+* ✅ **Approve**
+* ❌ **Reject**
+* 👤 **Escalate / Manual Review**
+
+The reviewer can also record a decision note.
+
+![AI Recommendation and Human Finance Decision](docs/screenshots/03-hitl-decision.png)
+
+This demonstrates a **Human-in-the-Loop governance model** in which:
+
+> **AI recommends. Human decides.**
 
 ---
 
 ## 📄 Finance Review Report
 
-The application can generate an editable Word report containing:
+The application generates an editable Word report containing:
 
-- Finance case summary
-- Documents reviewed
-- Expense Summary
-- Policy Compliance
-- Exceptions & Risks
-- Missing Evidence
-- Source/page evidence
-- AI recommendation
-- Human Finance decision
-- Reviewer notes
-- AI governance notice
+* Finance case summary
+* Documents reviewed
+* Expense Summary
+* Policy Compliance
+* Exceptions & Risks
+* Missing Evidence
+* Source/page references
+* AI recommendation
+* Human Finance decision
+* Reviewer notes
+* AI governance notice
 
-This provides an auditable separation between the **AI recommendation** and the **human decision**.
+This creates a clear separation between the AI-generated analysis and the authorised human decision.
 
 ---
 
-## 🧪 Synthetic test scenario
+## 🏗️ High-Level Architecture
 
-The MVP has been tested using synthetic travel-expense documents containing:
+```text
+                   ┌─────────────────────────┐
+                   │ Expense / Policy Files  │
+                   │ PDF / JPG / PNG / WEBP │
+                   └────────────┬────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ Document Extraction     │
+                   │                         │
+                   │ Native PDF text first   │
+                   │ Gemini Vision fallback  │
+                   └────────────┬────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ Chunking + Embeddings   │
+                   │ all-MiniLM-L6-v2        │
+                   └────────────┬────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ Evidence Retrieval      │
+                   │ Semantic + Keyword      │
+                   └────────────┬────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ Gemini Finance Analysis │
+                   └────────────┬────────────┘
+                                │
+            ┌───────────────────┼───────────────────┐
+            │                   │                   │
+            ▼                   ▼                   ▼
+     Policy Compliance   Exceptions & Risks   Missing Evidence
+            │                   │                   │
+            └───────────────────┼───────────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ AI Recommendation       │
+                   │ Advisory Only           │
+                   └────────────┬────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ Human Finance Decision  │
+                   └────────────┬────────────┘
+                                │
+                   ┌────────────▼────────────┐
+                   │ Finance Review Report   │
+                   └─────────────────────────┘
+```
 
-- Hotel expense above the permitted nightly limit
-- Compliant meal expense
-- Taxi expense with a missing receipt
-- Non-reimbursable alcohol expense
+---
 
-The Copilot identifies the relevant policy exceptions and supporting evidence before generating an advisory recommendation for Finance review.
+## 🛠️ Technology Stack
 
-No real employee or confidential financial information is required for the demo.
+* **Python**
+* **Gradio**
+* **Google Gemini API**
+* **Sentence Transformers**
+* **all-MiniLM-L6-v2 embeddings**
+* **PyPDF**
+* **python-docx**
+* **NumPy**
+* **Docker**
+* **Hugging Face Spaces**
+* **GitHub**
+
+---
+
+## 📂 Repository Structure
+
+```text
+finops-ai-copilot/
+│
+├── app.py
+├── Dockerfile
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── sample_data/
+│   ├── Employee_Expense_Claim_Test.pdf
+│   ├── Travel_Expense_Policy_Test.pdf
+│   └── FinOps_Test_Taxi_Receipt.jpg
+│
+└── docs/
+    └── screenshots/
+        ├── 01-main-interface.png
+        ├── 02-policy-compliance.png
+        └── 03-hitl-decision.png
+```
+
+---
+
+## 🧪 Sample Test Scenario
+
+Synthetic sample data is included in [`sample_data`](sample_data/).
+
+The test scenario contains:
+
+| Expense |  Amount | Policy / Evidence Issue                 |
+| ------- | ------: | --------------------------------------- |
+| Hotel   | GBP 180 | GBP 150 nightly limit exceeded          |
+| Dinner  |  GBP 32 | Within GBP 40 daily meal limit          |
+| Taxi    |  GBP 45 | Mandatory receipt missing               |
+| Alcohol |  GBP 18 | Non-reimbursable without prior approval |
+
+The application correctly identifies compliant and non-compliant items, missing evidence and cases requiring Finance intervention.
+
+A separate synthetic taxi receipt image is included to test the **Gemini Vision / OCR workflow**.
 
 ---
 
 ## 🔐 Security
 
-The Gemini API key is stored as a **Hugging Face Space Secret**.
+The Gemini API key is stored as an environment secret and is **not committed to the repository**.
 
-API keys and credentials should never be committed to the repository.
-
----
-
-## ⚠️ Important notice
-
-This application is an **MVP / demonstration project**.
-
-AI-generated analysis may contain errors and should not be treated as an automatic financial approval or rejection.
-
-Material findings should be checked against the cited source documents.
-
-**The AI recommendation is advisory only. The authorised Finance reviewer retains the final decision.**
+For the Hugging Face deployment, the API key is configured using **Space Secrets**.
 
 ---
 
-## 🚀 Future roadmap
+## ⚠️ MVP Limitations
 
-Potential future enhancements include:
+This project is currently an MVP / demonstration application.
 
-- ERP and expense-management system integration
-- SAP / Oracle / Workday integrations
-- Automated expense ingestion
-- Corporate card reconciliation
-- More advanced receipt extraction
-- Fraud and duplicate-claim detection
-- Organisation-specific policy libraries
-- Role-based access controls
-- Audit logs
-- Persistent case storage
-- Finance workflow integration
-- Approval routing
-- Enterprise monitoring and governance
+It does not currently include:
+
+* User authentication
+* Persistent database storage
+* ERP integration
+* SAP / Oracle / Workday integration
+* Corporate card reconciliation
+* Enterprise workflow routing
+* Role-based access control
+* Production audit logging
+
+AI-generated analysis may contain errors and material findings should always be checked against the cited source documents.
+
+**The AI recommendation is advisory only. A human Finance reviewer retains the final decision.**
+
+---
+
+## 🚀 Future Roadmap
+
+Potential enhancements include:
+
+* Expense-management platform integration
+* SAP / Oracle / Workday connectors
+* Automated expense ingestion
+* Corporate-card reconciliation
+* Duplicate expense detection
+* Fraud / anomaly detection
+* Organisation-specific policy libraries
+* Persistent case management
+* Approval workflows
+* Role-based access control
+* Audit logs
+* Finance dashboards
+* Enterprise monitoring and governance
+
+---
+
+## 🌐 Live Application
+
+### [🚀 Launch FinOps AI Copilot on Hugging Face](https://huggingface.co/spaces/SumitKohli/finops-ai-copilot)
 
 ---
 
 ## 👤 Project
 
-Built as an AI / FinOps MVP demonstrating:
+Built as a hands-on AI MVP demonstrating:
 
-**Document AI + Retrieval + Finance Policy Reasoning + Multimodal OCR + Human-in-the-Loop Governance**
+**Document AI · Multimodal OCR · Semantic Retrieval · Generative AI · Finance Policy Reasoning · Human-in-the-Loop Governance**
+
+---
+
+*All sample expense and policy documents included in this repository are synthetic and created solely for demonstration and testing.*
