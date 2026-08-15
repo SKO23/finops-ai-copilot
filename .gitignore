@@ -1,0 +1,7 @@
+__pycache__/
+venv/
+.env
+.DS_Store
+# Local development backups
+app_before_*.py
+app_v2_*_stable*.py
